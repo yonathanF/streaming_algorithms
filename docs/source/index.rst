@@ -11,3 +11,6 @@ Streaming Algorithms
    :caption: Contents:
 
    StreamManager
+   Majority
+   CountMin
+
