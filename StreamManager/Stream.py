@@ -87,4 +87,6 @@ class SimpleStream:
             data = self.data_source()
             if data is None:
                 break
-            self.buffer.put(data)
+
+            if not self.buffer.full():
+                self.buffer.put(data)

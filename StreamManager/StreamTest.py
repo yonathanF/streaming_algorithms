@@ -16,6 +16,9 @@ class CollectorAlgorithm:
     def callback(self, data):
         self.items.append(data)
 
+class CollectorAlgorithm2(CollectorAlgorithm):
+    pass
+
 class SimpleStreamBasics(TestCase):
     def setUp(self):
         def random():
@@ -38,13 +41,16 @@ class SimpleStreamBasics(TestCase):
     def test_subs_recieve_same_data(self):
        sub1 = SumAlgorithm()
        sub2 = CollectorAlgorithm()
+       sub3 = CollectorAlgorithm2()
 
        self.stream.subscribe(sub1.callback)
        self.stream.subscribe(sub2.callback)
+       self.stream.subscribe(sub3.callback)
 
        self.stream.shutdown()
 
        self.assertEqual(sub1.sum, sum(sub2.items))
+       self.assertEqual(sub2.items.sort(), sub3.items.sort())
 
 if __name__ == '__main__':
     main()
