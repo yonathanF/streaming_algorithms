@@ -25,14 +25,28 @@ class SimpleStream:
 
 
     def shutdown(self):
+        """
+        Shutsdown the stream by joining the consumer and producer threads
+        """
         self.buffer.put(None)
         self.notification_thread.join()
         self.producer_thread.join()
 
     def is_buffer_full(self):
+        """
+        Wraps the interal data structure
+
+        True if the buffer is full, false otherwise
+        """
         return self.buffer.full()
 
     def notifier(self):
+        """
+        Consumer of the queue
+
+        This is synced over the queue. Grabs new data from the queue
+        and calls all the observers. Quits on the first None value
+        """
         while True:
             new_data = self.buffer.get()
             if new_data is None:
@@ -65,6 +79,8 @@ class SimpleStream:
 
     def fill_buffer(self):
         """
+        Producer for the queue
+
         Fills up the buffer using the data source
         """
         while True:
