@@ -17,10 +17,15 @@ class SimpleStream:
         self.buffer_size = buffer_size
         self.buffer = Queue(buffer_size)
         self.subscribers = []
-
         self.notification_thread = Thread(target=self.notifier)
-        self.notification_thread.start()
         self.producer_thread = Thread(target=self.fill_buffer)
+
+    def start(self):
+        """
+        Starts the stream by waking up two threads that
+        consume from and produce into a synced queue
+        """
+        self.notification_thread.start()
         self.producer_thread.start()
 
 
