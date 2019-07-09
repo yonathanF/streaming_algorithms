@@ -21,14 +21,21 @@ class Majority:
     """
 
     def __init__(self, num_counters, keep_true_freq=False):
+
+        # it's in a [item, freq] format
         self.counters = [[0, 0] for _ in range(num_counters)]
         self.keep_true_freq = keep_true_freq
         if keep_true_freq:
             self.complete_list = []
 
+    def get_frequent_items(self):
+        """Most frequent elements"""
+        return sorted(self.counters, key=lambda pair: pair[1], reverse=True)
+
     def get_true_freq(self):
         """If enabled, returns the true frequency of the data"""
-        return collections.Counter(self.complete_list)
+        counts = collections.Counter(self.complete_list)
+        return sorted(counts.items(), key=lambda pair: pair[1], reverse=True)
 
     def is_monitored(self, element):
         """ Checks if the element is monitored by some counter"""
@@ -51,6 +58,13 @@ class Majority:
         for monitored_el in self.counters:
             if monitored_el[1] > 0:
                 monitored_el[1] -= 1
+
+    def callback(self, data):
+        """
+        Subscription to data source
+        :param data: must be hashable
+        """
+        self.insert_data(data)
 
     def insert_data(self, data):
         """Inserts a new data point according to the algorithm"""
