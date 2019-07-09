@@ -4,6 +4,8 @@ The Majority algorithm proposed by Demaine et al.
 It's a generalization of the majority algorithm.
 """
 
+import collections
+
 
 class NoEmptyCounter(Exception):
     """The counters are full"""
@@ -18,8 +20,15 @@ class Majority:
     Implements the M counter majority algorithm
     """
 
-    def __init__(self, num_counters):
+    def __init__(self, num_counters, keep_true_freq=False):
         self.counters = [[0, 0] for _ in range(num_counters)]
+        self.keep_true_freq = keep_true_freq
+        if keep_true_freq:
+            self.complete_list = []
+
+    def get_true_freq(self):
+        """If enabled, returns the true frequency of the data"""
+        return collections.Counter(self.complete_list)
 
     def is_monitored(self, element):
         """ Checks if the element is monitored by some counter"""
@@ -45,6 +54,9 @@ class Majority:
 
     def insert_data(self, data):
         """Inserts a new data point according to the algorithm"""
+        if self.keep_true_freq:
+            self.complete_list.append(data)
+
         try:
             index = self.is_monitored(data)
             self.counters[index][1] += 1
