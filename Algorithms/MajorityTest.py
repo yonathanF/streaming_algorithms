@@ -62,8 +62,7 @@ class MajorityStreamIntegration(TestCase):
     def setUp(self):
         self.majority = Majority(10, True)
         self.source = BoundedRandom(55, 1, 50)
-        self.biased_source = BoundedBiasedRandom(
-            55, 1, 50, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 90)
+        self.biased_source = BoundedBiasedRandom(55, 1, 50, [1, 2, 3, 4], 90)
         self.stream = SimpleStream(self.source.gen_data)
         self.biased_stream = SimpleStream(self.biased_source.gen_data)
 

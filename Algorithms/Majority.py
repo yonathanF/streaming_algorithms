@@ -62,6 +62,7 @@ class Majority:
     def callback(self, data):
         """
         Subscription to data source
+
         :param data: must be hashable
         """
         self.insert_data(data)
