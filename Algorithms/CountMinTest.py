@@ -50,16 +50,45 @@ class CountMinBasics(TestCase):
             est = self.count_min.count_item(item)
             self.assertTrue((est in (1, 2)))
 
-        self.assertEqual(self.count_min.count_item(100), 0)
+        self.assertTrue((self.count_min.count_item(1000) in (1, 0)))
+
+    def test_insert_with_complete(self):
+        count_min_complete = CountMinSketch(15, 15, True)
+        data = [i for i in range(10)]
+        data_dups = [2, 2, 3, 3, 3]
+        data.extend(data_dups)
+
+        for item in data:
+            count_min_complete.insert(item, 1)
+
+        for item in count_min_complete.get_true_freq():
+            est = count_min_complete.count_item(item[0][0])
+            self.assertEqual(item[1], est)
 
 
 class CountMinStreamIntegration(TestCase):
     def setUp(self):
-        self.count_min = CountMinSketch(10, 10)
-        self.source = BoundedRandom(55, 1, 50)
-        self.biased_source = BoundedBiasedRandom(55, 1, 50, [1, 2, 3, 4], 90)
+        self.count_min = CountMinSketch(1000, 1000, True)
+        self.source = BoundedRandom(1010, 1, 50)
+        self.biased_source = BoundedBiasedRandom(1050, 1, 50, [1, 2, 3, 4], 90)
         self.stream = SimpleStream(self.source.gen_data)
         self.biased_stream = SimpleStream(self.biased_source.gen_data)
+
+    def test_slightly_more_items_than_space(self):
+        self.stream.subscribe(self.count_min.callback)
+        self.stream.start()
+        self.stream.shutdown()
+        true_freq = self.count_min.get_true_freq()
+        for value in true_freq:
+            self.assertEqual(value[1], self.count_min.count_item(value[0][0]))
+
+    def test_biased_data_large(self):
+        self.biased_stream.subscribe(self.count_min.callback)
+        self.biased_stream.start()
+        self.biased_stream.shutdown()
+        true_freq = self.count_min.get_true_freq()
+        for value in true_freq:
+            self.assertEqual(value[1], self.count_min.count_item(value[0][0]))
 
 
 if __name__ == '__main__':

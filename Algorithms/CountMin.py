@@ -7,6 +7,7 @@ https://github.com/rafacarrascosa/countminsketch/
 on how the hash function is implemented
 '''
 
+from collections import Counter
 from hashlib import md5
 
 
@@ -16,6 +17,8 @@ class CountMinSketch:
     """
 
     def __init__(self, depth, width, keep_true=False):
+        self.keep_true = keep_true
+        self.complete_data = []
         self.depth = depth
         self.width = width
         self.matrix = [[0 for _ in range(width)] for _ in range(depth)]
@@ -25,6 +28,11 @@ class CountMinSketch:
         """
         Creates the data structure based on the eps and delta specified.
         """
+
+    def get_true_freq(self):
+        """If enabled, returns the true frequency of the data"""
+        counts = Counter(self.complete_data)
+        return sorted(counts.items(), key=lambda pair: pair[1], reverse=True)
 
     def hash_item(self, new_item):
         """
@@ -44,6 +52,9 @@ class CountMinSketch:
 
     def insert(self, new_item, value):
         """Insert item into the countmin data structure"""
+        if self.keep_true:
+            self.complete_data.append((new_item, value))
+
         for row, index in zip(self.matrix, self.hash_item(new_item)):
             row[index] += value
 
