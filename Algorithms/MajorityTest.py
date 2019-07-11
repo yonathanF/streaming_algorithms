@@ -78,7 +78,7 @@ class MajorityStreamIntegration(TestCase):
     def test_stream_source_majority(self):
         self.biased_stream.subscribe(self.majority.callback)
         self.biased_stream.start()
-        sleep(0.1)
+        sleep(3)
         self.biased_stream.shutdown()
 
         true_freq = self.majority.get_true_freq()[:10]
