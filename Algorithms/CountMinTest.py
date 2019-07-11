@@ -65,6 +65,11 @@ class CountMinBasics(TestCase):
             est = count_min_complete.count_item(item[0][0])
             self.assertEqual(item[1], est)
 
+    def test_from_bounds(self):
+        count_min = CountMinSketch.create_from_bounds(0.0001, 0.0000001)
+        self.assertEqual(count_min.depth, 17)
+        self.assertEqual(count_min.width, 27183)
+
 
 class CountMinStreamIntegration(TestCase):
     def setUp(self):

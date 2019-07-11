@@ -7,6 +7,7 @@ https://github.com/rafacarrascosa/countminsketch/
 on how the hash function is implemented
 '''
 
+import math
 from collections import Counter
 from hashlib import md5
 
@@ -28,6 +29,8 @@ class CountMinSketch:
         """
         Creates the data structure based on the eps and delta specified.
         """
+        return cls(math.ceil(math.log((1 / delta), math.e)),
+                   math.ceil(math.e / eps), keep_true)
 
     def get_true_freq(self):
         """If enabled, returns the true frequency of the data"""
