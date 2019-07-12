@@ -5,13 +5,15 @@ Implements a basic observable pattern so that multiple streaming algorithms
 can react to the data. Accepts a data generator.
 """
 
-from queue import Queue, Empty
+from queue import Empty, Queue
 from threading import Thread
+
 
 class SimpleStream:
     """
     A simple stream. Provides data at unspecified rate.
     """
+
     def __init__(self, data_source, buffer_size=100):
         self.data_source = data_source
         self.buffer_size = buffer_size
@@ -27,7 +29,6 @@ class SimpleStream:
         """
         self.notification_thread.start()
         self.producer_thread.start()
-
 
     def shutdown(self):
         """
@@ -60,7 +61,6 @@ class SimpleStream:
                 subscriber(new_data)
             self.buffer.task_done()
 
-
     def subscribe(self, callback):
         """
         Adds a subscriber to the known subsribers
@@ -80,7 +80,6 @@ class SimpleStream:
         except Empty:
             self.fill_buffer()
             return self.buffer.get()
-
 
     def fill_buffer(self):
         """
